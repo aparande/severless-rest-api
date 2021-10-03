@@ -15,6 +15,7 @@ import os
 import hashlib
 
 from google.cloud import storage
+import google.cloud.exceptions as gcp_exceptions
 from apng import APNG
 
 storage_client = storage.Client()
@@ -35,7 +36,6 @@ def save_frame(fname: str) -> str:
   """
   Save a frame from a bucket to the local disk
   """
-
   blob = storage_client.bucket(bucket).blob(img_folder + "/" + fname)
   ext = fname.split('.')[-1]
   _, tmp_file = tempfile.mkstemp(suffix='.' + ext)
@@ -74,7 +74,15 @@ def compile_gif(request) -> dict[str, str]:
       "URL": blob.public_url
     }
 
-  frames = [save_frame(name) for name in frames]
+  # TODO: Return early with a failure response if an image name doesn't exist in GCP.
+  # Pick an appropriate status code to return as well.
+  try:
+    frames = [save_frame(name) for name in frames]
+  except gcp_exceptions.NotFound as e:
+    return {
+      "Status": "Failure",
+      "Message": e.message,
+    }, 404
   apng_file = process_frames(frames, frame_rate)
 
   blob.upload_from_filename(apng_file)
