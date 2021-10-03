@@ -59,6 +59,8 @@ def compile_gif(request) -> dict[str, str]:
 
   # TODO: Use an MD5 hash of the filenames
 
+  # TODO: Return early with a failure response if an image name doesn't exist in GCP.
+  # Pick an appropriate status code to return as well.
   frames = [save_frame(name) for name in frames]
   apng_file = process_frames(frames, frame_rate)
 
