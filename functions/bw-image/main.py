@@ -31,7 +31,7 @@ def bw_image(event: dict[str, Any], *_) -> None:
   bucket = event['bucket']
   filename = event['name']
 
-  # TODO: If the image is in the raw folder, don't process it
+  # TODO: If the image is not in the raw folder, don't process it
   components = filename.split('/')
   if components[0] != "raw":
     print(f"{filename} is already processed!")
