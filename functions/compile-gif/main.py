@@ -57,7 +57,18 @@ def compile_gif(request) -> dict[str, str]:
   """
 
   # TODO: Extract the frame rate from the request query
-  frame_rate = int(request.args["rate"])
+  try:
+    frame_rate = int(request.args["rate"])
+  except ValueError:
+    return {
+      "Status": "Failure",
+      "Message": "Frame rate must be an integer larger than 0",
+    }
+  if frame_rate <= 0:
+    return {
+      "Status": "Failure",
+      "Message": "Frame rate must be an integer larger than 0",
+    }, 400
 
   # TODO: Extract the list of frames from the request body
   request_json = request.get_json(silent=True)
