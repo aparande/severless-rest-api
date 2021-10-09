@@ -28,8 +28,11 @@ def bw_image(event: dict[str, Any], *_) -> None:
   Cloud function entrypoint
   """
   # TODO: Extract the bucket name and the filename from the event
+  bucket = #<YOUR-CODE-HERE>
+  filename = #<YOUR-CODE-HERE>
 
-  # TODO: If the image is in the raw folder, don't process it
+  components = filename.split("/")
+  # TODO: If the image is not in the raw folder, don't process it
 
   extension = '.' + components[-1].split('.')[-1]
   _, download_file = tempfile.mkstemp(suffix=extension)
